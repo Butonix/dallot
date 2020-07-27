@@ -13,7 +13,6 @@ export default {
 			state.isAuthenticated = true
 			localStorage.setItem('auth_token', token)
 			axios.defaults.headers.common['auth-token'] = token
-			console.log(axios.defaults.headers)
 		},
 		setUserInfo: (state, payload) => {
 			state.username = payload.username
