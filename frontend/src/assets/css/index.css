@@ -1,0 +1,40 @@
+/*main*/
+
+body {
+	margin: 0;
+	background: #2a2a2a;
+}
+
+#app {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	color: #fff;
+}
+
+
+/* content */
+
+.content {
+	display: flex;
+	padding: 0 30px;
+}
+
+.content__main-box {
+	width: 100%;
+}
+
+.content__extra-box {
+	width: 40%;
+	margin-left: 20px;
+}
+
+.content__block {
+	background: #fff;
+	border-radius: 4px;
+	color: #000;
+	font-size: 17px;
+	font-weight: 400;
+	padding: 15px;
+	margin-bottom: 20px;
+}
