@@ -1,12 +1,19 @@
 <template>
-	<div>
-		<div class="content__block post">
+	<div class="update-post">
+		<div class="post content__block">
 			<div class="post__header">
-				Post title
+				<input ref="postTitleInput" class="update-post__title-input" type="text" placeholder="Заголовок поста">
 			</div>
-			<div @input.capture="UpdateEditorBlock" @keydown.capture.delete="RemoveEditorBlock($event.target)" class="text-editor post__body">
-				<div class="text-editor__block" contenteditable></div>
-			</div>
+			<TextEditor ref="textEditor" class="post__body"/>
+		</div>
+		<div class="update-post__buttons content__block">
+			<button @click="createPost" class="update-post__btn update-post__success-btn" title="Создать пост">
+				<icon v-if="loading" icon="bug" class="update-post__loading-icon" spin />
+				<icon icon="check" />
+			</button>
+			<button @click="clearAll" class="update-post__btn update-post__clear-btn" title="Убрать все">
+				<icon icon="times" />
+			</button>
 		</div>
 	</div>
 </template>
@@ -16,64 +23,115 @@
 
 	export default {
 		name: 'NewPost',
+		data: () => ({
+			loading: false
+		}),
+		components: {
+			TextEditor: () => import('@/components/TextEditor.vue')
+		},
+		mounted() {
+			this.$store.commit('showExtraContentBox')
+		},
+		beforeDestroy() {
+			this.$store.commit('unshowExtraContentBox')
+		},
 		methods: {
-			UpdateEditorBlock(event) {
-				if(event.inputType == 'insertFromPaste') {
-					//var divs = event.target.querySelectorAll('div')
-					1 == 1
-				} else if(event.target.querySelector('div')) {
-					var html = event.target.querySelector('div').innerHTML.replace('<br>', '')
-					var divs = event.target.querySelectorAll('div')
-					for(var i = 0; i < divs.length; i++)
-						divs[i].remove()
-					this.AddEditorBlock(event.target, html)
+			clearAll() {
+				if(confirm('Вы уверены, что хотите удалить все изменения?')) {
+					this.$refs.postTitleInput.value = ''
+					this.$refs.textEditor.clearAll()
 				}
 			},
-			AddEditorBlock(obj, html='') {
-				var element = document.createElement('div')
-				element.classList.add('text-editor__block')
-				element.setAttribute('contenteditable', '')
-				element.innerHTML = html
-				obj.after(element)
-				obj.nextElementSibling.focus()
-				return obj.nextElementSibling
-			},
-			RemoveEditorBlock(obj) {
-				if(!obj.textContent && obj.parentElement.childElementCount > 1) {
-					var range = document.createRange()
-					if(obj.previousElementSibling) {
-						obj.previousElementSibling.innerHTML += '.'
-						range.selectNodeContents(obj.previousElementSibling)
-					} else {
-						obj.nextElementSibling.innerText += '.'
-						range.selectNodeContents(obj.nextElementSibling)
-					}
-					obj.remove()
-					range.collapse()
-					window.getSelection().removeAllRanges()
-					window.getSelection().addRange(range)
-				}
+			async createPost() {
+				this.loading = true
+				var result = await this.$store.dispatch('createPost', {
+					userId: this.$store.getters.userId,
+					title: this.$refs.postTitleInput.value,
+					text: this.$refs.textEditor.getContent()
+				})
+				this.loading = false
+				if(result) {
+					this.$store.commit('showNotification', {
+						message: 'Готово! Посмотри теперь на свой пост',
+						type: 'success'
+					})
+					this.$router.push({name: 'Post', params: {id: result}})
+				} else 
+					this.$store.commit('showNotification', {
+						message: 'Ой-ой! Возникла непредвиденная ошибка',
+						type: 'error'
+					})
 			}
 		}
 	}
 </script>
 
 <style>
-.text-editor {
-	
+.update-post__title-input {
+	border: none;
+	outline: none;
+	background: none;
+	padding: 0;
+	width: 100%;
+	font-size: 25px;
+	font-weight: 500;
+	font-family: 'Montserrat', sans-serif;
 }
 
-.text-editor__block {
-	line-height: 25px;
-	font-size: 16px;
+.post__body .text-editor__block {
+	margin-bottom: 10px;
 }
 
-.text-editor__block:after {
-	display: none;
+.post__body .text-editor__block:last-child {
+	margin-bottom: 0;
+}
 
-	content: attr(data-placeholder);
-	position: relative;
-	color: #fff;
+.update-post__buttons {
+	display: flex;
+	padding: 0;
+}
+
+.update-post__btn {
+	border: none;
+	width: 100%;
+	font-size: 25px;
+	padding: 10px;
+	cursor: pointer;
+	outline: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: .2s;
+}
+
+.update-post__btn:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.update-post__btn:last-child {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.update-post__success-btn {
+	background: #2ecc71;
+}
+
+.update-post__success-btn:hover {
+	background: #27ae60;
+}
+
+.update-post__clear-btn {
+	background: #e74c3c;
+}
+
+.update-post__clear-btn:hover {
+	background: #c0392b;
+}
+
+.update-post__loading-icon {
+	margin-right: 10px;
 	font-size: 20px;
 }
 </style>

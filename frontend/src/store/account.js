@@ -16,7 +16,7 @@ export default {
 		},
 		setUserInfo: (state, payload) => {
 			state.username = payload.username
-			state.userId = payload.user_id
+			state.userId = payload.id
 		},
 		logout: (state) => {
 			state.authToken = null
@@ -27,6 +27,11 @@ export default {
 	},
 	actions: {
 		async CheckAuthToken({ commit }, token) {
+			// Check auth token validity
+			// SUCCESS: return true
+			// INVALID OR EXPIRED TOKEN: return false
+			// OTHER ERROR: return none
+
 			return axios
 				.get('api/account/token/get_user/?auth_token=' + token)
 				.then(response => {
@@ -41,6 +46,11 @@ export default {
 				})
 		},
 		async GetAuthToken({ commit }, payload) {
+			// Authenticate of user
+			// SUCCESS: return auth token
+			// INVALID FIELDS: return false
+			// OTHER ERROR: return none
+
 			return axios
 				.post('api/account/token/get_auth_token/', payload)
 				.then(response => {
@@ -58,6 +68,7 @@ export default {
 	getters: {
 		authToken: (state) => (state.authToken),
 		isUserAuthenticated: (state) => (state.isAuthenticated),
-		username: (state) => (state.username)
+		username: (state) => (state.username),
+		userId: (state) => (state.userId)
 	}
 }

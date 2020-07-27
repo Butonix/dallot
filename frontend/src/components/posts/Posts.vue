@@ -46,7 +46,7 @@
 			this.posts = await this.$store.dispatch('GetPosts')
 			this.$store.commit('showExtraContentBox')
 		},
-		destroyed() {
+		beforeDestroy() {
 			this.$store.commit('unshowExtraContentBox')
 		} 
 	}

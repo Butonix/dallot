@@ -14,3 +14,11 @@
 	font-size: 16px;
 	line-height: 25px;
 }
+
+.post__body > div {
+	margin-bottom: 10px;
+}
+
+.post__body > div:last-child {
+	margin-bottom: 0;
+}

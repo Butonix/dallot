@@ -5,8 +5,8 @@
 				<div class="post__header">
 					{{post.title}}
 				</div>
-				<div class="post__body">
-					{{post.text}}
+				<div class="post__body" v-html="post.text">
+					
 				</div>
 			</div>
 		</div>
@@ -40,7 +40,7 @@
 				})
 			}
 		},
-		destroyed() {
+		beforeDestroy() {
 			this.$store.commit('unshowExtraContentBox')
 		}
 	}
