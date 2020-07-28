@@ -43,6 +43,9 @@ class User(AbstractBaseUser):
 	USERNAME_FIELD = 'username'
 	REQUIRED_FIELDS = ['email']
 
+	class Meta:
+		ordering = ['-date_joined']
+
 	def __str__(self):
 		return self.username
 
