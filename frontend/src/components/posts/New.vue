@@ -78,11 +78,11 @@
 	font-family: 'Montserrat', sans-serif;
 }
 
-.post__body .text-editor__block {
+.post__body .text-editor__edit-block {
 	margin-bottom: 10px;
 }
 
-.post__body .text-editor__block:last-child {
+.post__body .text-editor__edit-block:last-child {
 	margin-bottom: 0;
 }
 

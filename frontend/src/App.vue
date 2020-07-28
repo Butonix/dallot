@@ -5,7 +5,34 @@
 			<router-view class="content__main-box" />
 			<div v-if="this.$store.state.showExtraContentBox" class="content__extra-box">
 				<div class="content__block">
-					Сайт находится в разработке
+					Добавить toolsbar в редактор
+				</div>
+				<div class="content__block">
+					Добавить placeholder в редактор
+				</div>
+				<div class="content__block">
+					Добавить в модель поста новые поля, а ненунужные убрать
+				</div>
+				<div class="content__block">
+					Разделить иконки при просмотре постов на кликабельные и обычные
+				</div>
+				<div class="content__block">
+					Реализовать функционал для обновления рейтинга поста
+				</div>
+				<div class="content__block">
+					Добавить закладки
+				</div>
+				<div class="content__block">
+					Реализовать функционал добовления поста в закладки
+				</div>
+				<div class="content__block">
+					Добавить пользователя (если это не admin) при просмотре постов
+				</div>
+				<div class="content__block">
+					Добавить пользователя (если это не admin), функциональные и информирующие иконки (просмотры, комменты, закладки, рейтинг) на страницу поста
+				</div>
+				<div class="content__block">
+					Добавить комментарии
 				</div>
 			</div>
 		</div>

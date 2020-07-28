@@ -12,13 +12,13 @@ import { faBookmark as fasBookmark } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons'
 import { faCommentAlt as fasCommentAlt } from '@fortawesome/free-solid-svg-icons'
 import { faCommentAlt as farCommentAlt } from '@fortawesome/free-regular-svg-icons'
-import { faTimes, faChevronUp, faChevronDown, faBug, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faChevronUp, faChevronDown, faBug, faCheck, faPlus } from '@fortawesome/free-solid-svg-icons'
 import '@/assets/css/index.css'
 
 library.add(fasEye, farEye)
 library.add(fasBookmark, farBookmark)
 library.add(fasCommentAlt, farCommentAlt)
-library.add(faTimes, faChevronUp, faChevronDown, faBug, faCheck)
+library.add(faTimes, faChevronUp, faChevronDown, faBug, faCheck, faPlus)
 
 Vue.component('icon', FontAwesomeIcon)
 
