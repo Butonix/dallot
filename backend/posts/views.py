@@ -34,7 +34,11 @@ class PostView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
 	permission_classes = [PostPermission]
 
 	def get(self, request, *args, **kwargs):
-		return self.retrieve(request, *args, **kwargs)
+		response = self.retrieve(request, *args, **kwargs)
+		post = self.get_object()
+		post.views += 1
+		post.save()
+		return response
 
 	def put(self, request, *args, **kwargs):
 		return self.update(request, *args, **kwargs)
