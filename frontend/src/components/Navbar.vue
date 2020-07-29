@@ -53,7 +53,7 @@
 			Logout() {
 				this.$store.commit('logout')
 				this.$store.commit('showNotification', {
-					message: 'Пока-пока, заходи еще!',
+					message: 'Пока-пока, заходи еще',
 					type: 'success'
 				})
 				this.$router.push({name: 'Home'})

@@ -16,12 +16,9 @@ class Authentication(BaseAuthentication):
 
 		user_id = utils.decode_auth_token(auth_token)
 		if not user_id:
-			raise AuthenticationFailed('Токен авторизации неправильный')
+			raise AuthenticationFailed('Token is invalid or expired')
 
 		try:
 			return (User.objects.get(id=user_id), None)
 		except User.DoesNotExist:
-			raise AuthenticationFailed('Такого пользователя не существует')
-
-	def authenticate_header(self, request):
-		return 'Для доступа к данной странице необходимо авторизоваться'
+			raise AuthenticationFailed('Token is invalid')

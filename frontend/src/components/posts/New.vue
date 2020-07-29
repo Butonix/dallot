@@ -47,20 +47,15 @@
 				var result = await this.$store.dispatch('createPost', {
 					userId: this.$store.getters.userId,
 					title: this.$refs.postTitleInput.value,
-					text: this.$refs.textEditor.getContent()
+					content: this.$refs.textEditor.getContent()
 				})
 				this.loading = false
-				if(result) {
-					this.$store.commit('showNotification', {
-						message: 'Готово! Посмотри теперь на свой пост',
-						type: 'success'
-					})
-					this.$router.push({name: 'Post', params: {id: result}})
-				} else 
-					this.$store.commit('showNotification', {
-						message: 'Ой-ой! Возникла непредвиденная ошибка',
-						type: 'error'
-					})
+				this.$store.commit('showNotification', {
+					message: result.message,
+					type: result.success ? 'success' : 'error'
+				})
+				if(result.success)
+					this.$router.push({name: 'Post', params: {id: result.id}})
 			}
 		}
 	}

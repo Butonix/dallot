@@ -28,11 +28,15 @@ Vue.config.productionTip = false
 
 axios.defaults.baseURL = 'http://localhost:8000/'
 
-axios.interceptors.response.use((response) => {
-	return response
-}, function(error) {
+axios.interceptors.response.use((response) => ({
+	data: response.data,
+	status: response.status
+}), function(error) {
 	console.log('ERROR: ', error)
-	return Promise.reject(error)
+	return Promise.reject({
+		detail: error.response.data.detail,
+		status: error.response.status
+	})
 })
 
 new Vue({

@@ -2,16 +2,15 @@ from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from . import utils
 from .models import Post
-from .serializers import PostSerializer
 from .permissions import PostPermission
 
 
 class PostsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
-	"""Getting list of all posts and creating a new one"""
+	"""Get list of all posts and create a new one"""
 
 	queryset = Post.objects.all()
-	serializer_class = PostSerializer
 	permission_classes = [IsAuthenticatedOrReadOnly]
 
 	def get(self, request):
@@ -23,14 +22,16 @@ class PostsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)
 
+	def get_serializer_class(self):
+		return utils.get_serializer_class(self.request.method)
+
 
 class PostView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
 			   mixins.DestroyModelMixin, GenericAPIView):
-	"""Getting, update and destroy post by id"""
+	"""Get, update and destroy post by id"""
 
 	lookup_field = 'id'
 	queryset = Post.objects.all()
-	serializer_class = PostSerializer
 	permission_classes = [PostPermission]
 
 	def get(self, request, *args, **kwargs):
@@ -46,3 +47,26 @@ class PostView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
 	def delete(self, request, *args, **kwargs):
 		return self.destroy(request, *args, **kwargs)
 
+	def get_serializer_class(self):
+		return utils.get_serializer_class(self.request.method)
+
+
+class DropRating(utils.UpdatePostRatingMixin):
+	"""Drop rating of the post by id"""
+
+	drop_rating = True
+	message = 'You cannot drop the rating twice'
+
+
+class RaiseRating(utils.UpdatePostRatingMixin):
+	"""Raise rating of the post by id"""
+
+	raise_rating = True
+	message = 'You cannot raise the rating twice'
+
+
+class RestoreRating(utils.UpdatePostRatingMixin):
+	"""Restore vote at rating of the post by id"""
+
+	restore_rating = True
+	message = 'You cannot restore vote if you did not vote'

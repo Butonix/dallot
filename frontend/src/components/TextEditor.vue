@@ -55,14 +55,16 @@
 				}
 			},
 			showToolsbar() {
-				this.$refs.toolsbar.style.top = event.target.offsetTop + 'px'
-				this.$refs.toolsbar.style.left = event.target.offsetLeft + 'px'
-				this.$refs.toolsbar.style.width = event.target.offsetWidth + 'px'
+				1 == 1
+				//this.$refs.toolsbar.style.top = event.target.offsetTop + 'px'
+				//this.$refs.toolsbar.style.left = event.target.offsetLeft + 'px'
+				//this.$refs.toolsbar.style.width = event.target.offsetWidth + 'px'
 			},
 			hideToolsbar() {
-				this.$refs.toolsbar.style.top = 0
-				this.$refs.toolsbar.style.left = 0
-				this.$refs.toolsbar.style.width = '100%'
+				1 == 1
+				//this.$refs.toolsbar.style.top = 0
+				//this.$refs.toolsbar.style.left = 0
+				//this.$refs.toolsbar.style.width = '100%'
 			},
 			clearAll: () => {
 				var blocks = document.querySelectorAll('.text-editor__edit-block')
@@ -74,10 +76,8 @@
 				var content = ''
 				var blocks = document.querySelectorAll('.text-editor__edit-block')
 				for(var i = 0; i < blocks.length; i++)
-					if(blocks[i].textContent.trim()) {
-						console.log(blocks[i].textContent.trim())
+					if(blocks[i].textContent.trim())
 						content += '<div>' + blocks[i].innerHTML + '</div>'
-					}
 				return content
 			}
 		}

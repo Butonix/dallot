@@ -5,9 +5,7 @@
 				<div class="post__header">
 					{{post.title}}
 				</div>
-				<div class="post__body" v-html="post.text">
-					
-				</div>
+				<div class="post__body" v-html="post.content"></div>
 			</div>
 		</div>
 		<Loading v-else />
@@ -24,21 +22,17 @@
 			post: null
 		}),
 		async created() {
-			var result = await this.$store.dispatch('GetPost', this.id)
+			var result = await this.$store.dispatch('getPost', {
+				id: this.id
+			})
+			if(result.success)
+				this.post = result.post
+			else
+				this.$store.commit('showNotification', {
+					message: result.message,
+					type: 'error'
+				})
 			this.$store.commit('showExtraContentBox')
-			if(result)
-				this.post = result
-			else if(result == false) {
-				this.$store.commit('showNotification', {
-					message: 'Error 1',
-					type: 'error'
-				})
-			} else {
-				this.$store.commit('showNotification', {
-					message: 'Error 2',
-					type: 'error'
-				})
-			}
 		},
 		beforeDestroy() {
 			this.$store.commit('unshowExtraContentBox')

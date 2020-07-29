@@ -34,10 +34,10 @@ class GetAuthToken(APIView):
 class GetUserByAuthToken(APIView):
 	"""Return user if authentication token is valid or error"""
 
-	def get(self, request):
-		token = request.query_params.get('auth_token')
+	def post(self, request):
+		token = request.data.get('token')
 		if not token:
-			return Response({'detail': 'Request must have \'auth_token\''},
+			return Response({'detail': 'Request must have \'token\''},
 							status=HTTP_400_BAD_REQUEST)
 
 		user_id = utils.decode_auth_token(token)

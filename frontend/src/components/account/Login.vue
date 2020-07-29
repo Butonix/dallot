@@ -30,27 +30,17 @@ export default {
 	methods: {
 		async Login() {
 			this.loginning = true
-			var result = await this.$store.dispatch('GetAuthToken', {
+			var result = await this.$store.dispatch('getAuthToken', {
 				username: this.username,
 				password: this.password
 			})
 			this.loginning = false
-			if(result) {
-				this.$store.commit('showNotification', {
-					message: 'Рад тебя видеть, ' + this.$store.getters.username + '!',
-					type: 'success'
-				})
+			this.$store.commit('showNotification', {
+				message: result.message,
+				type: result.success ? 'success' : 'error'
+			})
+			if(result.success)
 				this.$router.push({name: 'Home'})
-			} else if(result == false)
-				this.$store.commit('showNotification', {
-					message: 'Похоже, ошибка в введенных данных. Попробуй войти еще раз',
-					type: 'error'
-				})
-			else
-				this.$store.commit('showNotification', {
-					message: 'Произошла непредвиденная ошибка. Попробуй обратиться в службу поддержки. Там тебе помогут',
-					type: 'error'
-				})
 		}
 	}
 }

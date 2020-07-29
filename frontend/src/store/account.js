@@ -23,45 +23,57 @@ export default {
 			state.isAuthenticated = false
 			state.username = null
 			state.userId = null
+			localStorage.removeItem('auth_token')
+			delete axios.defaults.headers.common['auth-token']
 		}
 	},
 	actions: {
-		async CheckAuthToken({ commit }, token) {
-			// Check auth token validity
-			// SUCCESS: return true
-			// INVALID OR EXPIRED TOKEN: return false
-			// OTHER ERROR: return none
-
+		async checkAuthToken({ commit }, { token }) {
 			return axios
-				.get('api/account/token/get_user/?auth_token=' + token)
-				.then(response => {
+				.post('api/account/token/get_user/', {
+					token: token
+				}).then(response => {
 					commit('setAuthToken', token)
 					commit('setUserInfo', response.data)
-					return true
-				})
-				.catch(error => {
-					if(error.response.status == 400)
-						if(error.response.data.detail == 'Token is invalid or expired' || error.response.data.detail == 'Token is invalid')
-							return false
+					return {
+						success: true,
+					}
+				}).catch(error => {
+					if(error.status == 400)
+						if(error.detail == 'Token is invalid or expired' || error.detail == 'Token is invalid')
+							return {
+								success: false,
+								message: 'Твой токен доступа истек. Перезайди в аккаунт'
+							}
+					return {
+						success: false,
+						message: 'Ой-ой! Что-то пошло не так'
+					}
 				})
 		},
-		async GetAuthToken({ commit }, payload) {
-			// Authenticate of user
-			// SUCCESS: return auth token
-			// INVALID FIELDS: return false
-			// OTHER ERROR: return none
-
+		async getAuthToken({ commit }, { username, password}) {
 			return axios
-				.post('api/account/token/get_auth_token/', payload)
-				.then(response => {
+				.post('api/account/token/get_auth_token/', {
+					username: username,
+					password: password
+				}).then(response => {
 					commit('setAuthToken', response.data.token)
 					commit('setUserInfo', response.data.user)
-					return true
-				})
-				.catch(error => {
-					if (error.response.status == 400)
-						if(error.response.data.detail == 'Username or password are invalid')
-							return false
+					return {
+						success: true,
+						message: 'Рад тебя видеть, ' + response.data.user.username
+					}
+				}).catch(error => {
+					if (error.status == 400)
+						if(error.detail == 'Username or password are invalid')
+							return {
+								success: false,
+								message: 'Кажется, ошибка в введенный данных'
+							}
+					return {
+						success: false,
+						message: 'Ой-ой! Что-то пошло не так'
+					}
 				})
 		}
 	},
