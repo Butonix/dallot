@@ -75,6 +75,50 @@ export default {
 						message: 'Ой-ой! Что-то пошло не так'
 					}
 				})
+		},
+		async userRegistration(context, { username, email, password }) {
+			return axios.post('api/account/create_user/', {
+				username: username,
+				email: email,
+				password: password
+			}).then(() => ({
+				success: true,
+				message: 'Поздравляю со вступлением в нашу команду. Теперь ты может войти в аккаунт'
+			})).catch(error => {
+				console.log(error.data)
+				switch(error.data[Object.keys(error.data)[0]][0]) {
+					case 'Enter a valid email address.':
+						var message = 'Лучше ввести корректный email'
+						break
+					case 'The password is too similar to the username.':
+						message = 'Твой пароль уж очень напоминает введенный логин'
+						break
+					case 'The password is too similar to the email.':
+						message = 'Твой пароль уж очень напоминает введеный email'
+						break
+					case 'This password is too short. It must contain at least 8 characters.':
+						message = 'Посчитай, в пароле должно быть минимум 8 символов'
+						break
+					case 'This password is too common.':
+						message = 'Даже я догодался бы до такого простого пароля'
+						break
+					case 'This password is entirely numeric.':
+						message = 'Пароль только из цифр - плохой пароль'
+						break
+					case 'user with this username already exists.':
+						message = 'Я уже знаю пользователя с таким логином. Не ты ли это?'
+						break
+					case 'user with this email already exists.':
+						message = 'Это точно твой email? У нас уже есть один с такой почтой'
+						break
+					default:
+						message = error.data[Object.keys(error.data)[0]][0]
+				}
+				return {
+					success: false,
+					message: message
+				}
+			})
 		}
 	},
 	getters: {

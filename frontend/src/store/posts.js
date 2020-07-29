@@ -1,6 +1,14 @@
 import axios from 'axios'
 
 export default {
+	state: {
+		posts: null
+	},
+	mutations: {
+		updatePosts: (state, posts) => {
+			state.posts = posts
+		}
+	},
 	actions: {
 		getPosts: () => {
 			return axios.get('api/posts/').then(response => ({
@@ -76,5 +84,8 @@ export default {
 					success: false,
 				}))
 		}
+	},
+	getters: {
+		posts: (state) => (state.posts)
 	}
 }

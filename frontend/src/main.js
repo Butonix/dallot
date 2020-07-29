@@ -35,7 +35,8 @@ axios.interceptors.response.use((response) => ({
 	console.log('ERROR: ', error)
 	return Promise.reject({
 		detail: error.response.data.detail,
-		status: error.response.status
+		status: error.response.status,
+		data: error.response.data
 	})
 })
 

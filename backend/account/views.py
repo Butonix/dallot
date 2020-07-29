@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.mixins import CreateModelMixin
 
 from . import utils
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, CreateUserSerializer
 
 
 class GetAuthToken(APIView):
@@ -53,3 +55,13 @@ class GetUserByAuthToken(APIView):
 
 		serializer = UserSerializer(user)
 		return Response(serializer.data)
+
+
+class CreateUserView(CreateModelMixin, GenericAPIView):
+	"""User registration"""
+
+	serializer_class = CreateUserSerializer
+
+	def post(self, request, *args, **kwargs):
+		return self.create(request, *args, **kwargs)
+

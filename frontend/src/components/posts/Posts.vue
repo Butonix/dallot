@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<div class="posts-list" v-if="posts">
-			<div v-for="post in posts" :key="post.id" class="content__block posts-list__post">
+		<div class="posts-list" v-if="this.$store.getters.posts">
+			<div v-for="post in this.$store.getters.posts" :key="post.id" class="content__block posts-list__post">
 				<div class="posts-list__post-header">
 					<router-link :to="{name: 'Post', params: {id: post.id}}">
 						{{post.title}}
 					</router-link>
 				</div>
 				<div class="posts-list__post-body">
-					{{post.content.slice(0, 200)}}...
+					{{post.content.slice(0, 300)}}...
 				</div>
 				<div class="posts-list__post-footer">
 					<div class="posts-list__post-footer__half">
@@ -41,19 +41,21 @@
 <script>
 	export default {
 		name: 'Posts',
-		data: () => ({
-			posts: null
-		}),
 		async created() {
 			var result = await this.$store.dispatch('getPosts')
+			if(!this.$store.getters.posts)
+				this.$store.commit('showExtraContentBox')
 			if(result.success)
-				this.posts = result.posts
+				this.$store.commit('updatePosts', result.posts)
 			else 
 				this.$store.commit('showNotification', {
 					message: result.message,
 					type: 'error'
 				})
-			this.$store.commit('showExtraContentBox')
+		},
+		mounted() {
+			if(this.$store.getters.posts)
+				this.$store.commit('showExtraContentBox')
 		},
 		beforeDestroy() {
 			this.$store.commit('unshowExtraContentBox')
@@ -121,7 +123,7 @@
 }
 
 .posts-list__post-header {
-	margin-bottom: 18px;
+	margin-bottom: 20px;
 }
 
 .posts-list__post-header > a {
@@ -129,6 +131,11 @@
 	font-size: 23px;
 	text-decoration: none;
 	color: #000;
+	transition: .2s;
+}
+
+.posts-list__post-header > a:hover {
+	color: #8e44ad;
 }
 
 .posts-list__post-body {
@@ -137,7 +144,7 @@
 }
 
 .posts-list__post-footer {
-	margin-top: 18px;
+	margin-top: 20px;
 	display: flex;
 	justify-content: space-between;
 	font-size: 15px;
