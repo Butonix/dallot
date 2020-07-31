@@ -2,13 +2,15 @@ from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from core.mixins import BaseAPIView
+
 from . import utils
 from .models import Post
 from .permissions import PostPermission
 
 
 class PostsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
-	"""Get list of all posts and create a new one"""
+	"""Returns list of all posts and creates a new one"""
 
 	queryset = Post.objects.all()
 	permission_classes = [IsAuthenticatedOrReadOnly]
@@ -27,8 +29,8 @@ class PostsView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
 
 
 class PostView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
-			   mixins.DestroyModelMixin, GenericAPIView):
-	"""Get, update and destroy post by id"""
+			   mixins.DestroyModelMixin, BaseAPIView):
+	"""Returns, updates and destroys post"""
 
 	lookup_field = 'id'
 	queryset = Post.objects.all()
@@ -51,22 +53,38 @@ class PostView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
 		return utils.get_serializer_class(self.request.method)
 
 
-class DropRating(utils.UpdatePostRatingMixin):
-	"""Drop rating of the post by id"""
+class DropRatingView(utils.UpdatePostRatingMixin):
+	"""Drops rating of the post"""
 
 	drop_rating = True
 	message = 'You cannot drop the rating twice'
 
 
-class RaiseRating(utils.UpdatePostRatingMixin):
-	"""Raise rating of the post by id"""
+class RaiseRatingView(utils.UpdatePostRatingMixin):
+	"""Raises rating of the post"""
 
 	raise_rating = True
 	message = 'You cannot raise the rating twice'
 
 
-class RestoreRating(utils.UpdatePostRatingMixin):
-	"""Restore vote at rating of the post by id"""
+class RestoreRatingView(utils.UpdatePostRatingMixin):
+	"""Restores vote at rating of the post"""
 
 	restore_rating = True
 	message = 'You cannot restore vote if you did not vote'
+
+
+class AddToBookmarksView(utils.UpdatePostBookmarksMixin):
+	"""Adds post to bookmarks of authenticate user"""
+
+	add = True
+	message = 'You cannot bookmark post twice'
+
+
+class RemoveFromBookmarksView(utils.UpdatePostBookmarksMixin):
+	"""Removes post to bookmarks of authenticate user"""
+
+	remove = True
+	message = 'You cannot remove post from bookmarks twice'
+
+	

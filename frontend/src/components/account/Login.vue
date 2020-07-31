@@ -35,12 +35,13 @@ export default {
 				password: this.password
 			})
 			this.loginning = false
+
 			this.$store.commit('showNotification', {
 				message: result.message,
 				type: result.success ? 'success' : 'error'
 			})
-			if(result.success)
-				this.$router.push({name: 'Home'})
+			
+			if(result.success) this.$router.push({name: 'Home'})
 		}
 	}
 }

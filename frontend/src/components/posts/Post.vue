@@ -25,13 +25,15 @@
 			var result = await this.$store.dispatch('getPost', {
 				id: this.id
 			})
-			if(result.success)
-				this.post = result.post
-			else
+
+			if(result.success) this.post = result.post
+			else {
 				this.$store.commit('showNotification', {
 					message: result.message,
 					type: 'error'
 				})
+			}
+			
 			this.$store.commit('showExtraContentBox')
 		},
 		beforeDestroy() {

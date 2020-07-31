@@ -25,8 +25,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
 		fields = ['username', 'email', 'password']
 
 	def validate(self, attrs):
-		print('validate')
-
 		user = User(**attrs)
 		password = attrs.get('password')
 
@@ -41,14 +39,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
 		return attrs
 
 	def create(self, validated_data):
-		print('create')
-
 		try:
 			user = self.perform_create(validated_data)
 		except IntegrityError:
 			self.fail('cannot_create_user')
-
-		print('yes')
 
 		return user
 

@@ -42,6 +42,7 @@
 					this.$refs.textEditor.clearAll()
 				}
 			},
+
 			async createPost() {
 				this.loading = true
 				var result = await this.$store.dispatch('createPost', {
@@ -50,12 +51,15 @@
 					content: this.$refs.textEditor.getContent()
 				})
 				this.loading = false
+
 				this.$store.commit('showNotification', {
 					message: result.message,
 					type: result.success ? 'success' : 'error'
 				})
-				if(result.success)
+				
+				if(result.success) {
 					this.$router.push({name: 'Post', params: {id: result.id}})
+				}
 			}
 		}
 	}

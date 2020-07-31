@@ -19,6 +19,7 @@ export default {
 				state.show = true
 			}
 		},
+		
 		closeNotification: (state) => {
 			state.type = null
 			state.message = null

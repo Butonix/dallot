@@ -11,7 +11,7 @@ from .serializers import UserSerializer, CreateUserSerializer
 
 
 class GetAuthToken(APIView):
-	"""Get authentication JWT and user by username and password"""
+	"""Returns authentication JWT and user"""
 
 	def post(self, request):
 		username = request.data.get('username')
@@ -34,7 +34,7 @@ class GetAuthToken(APIView):
 
 
 class GetUserByAuthToken(APIView):
-	"""Return user if authentication token is valid or error"""
+	"""Returns user if authentication token is valid or exception"""
 
 	def post(self, request):
 		token = request.data.get('token')

@@ -38,12 +38,13 @@
 					password: this.password
 				})
 				this.loading = false
+
 				this.$store.commit('showNotification', {
 					message: result.message,
 					type: result.success ? 'success' : 'error'
 				})
-				if(result.success)
-					this.$router.push({name: 'Login'})
+				
+				if(result.success) this.$router.push({name: 'Login'})
 			}
 		}
 	}

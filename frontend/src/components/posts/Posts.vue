@@ -8,7 +8,7 @@
 					</router-link>
 				</div>
 				<div class="posts-list__post-body">
-					{{post.content.slice(0, 300)}}...
+					{{getTransformText(post.content)}}...
 				</div>
 				<div class="posts-list__post-footer">
 					<div class="posts-list__post-footer__half">
@@ -19,7 +19,10 @@
 							<icon :icon="['far', 'comment-alt']" class="posts-list__post-info__icon" />0
 						</div>
 						<div class="posts-list__post-info">
-							<icon :icon="[getIconPrefix(post.bookmark_users), 'bookmark']" class="posts-list__post-info__icon clickable" :class="getIconClass(post.bookmark_users)" />{{post.bookmark_users.length}}
+							<icon @click="updatePostBookmarks($event.target, post.id)" :icon="[getIconPrefix(post.bookmarked_users), 'bookmark']" class="posts-list__post-info__icon clickable" :class="getIconClass(post.bookmarked_users)" />
+							<div class="posts-list__post-info__value">
+								{{post.bookmarked_users.length}}
+							</div>
 						</div>
 					</div>
 					<div class="posts-list__post-footer__half">
@@ -45,9 +48,10 @@
 			var result = await this.$store.dispatch('getPosts')
 			if(!this.$store.getters.posts)
 				this.$store.commit('showExtraContentBox')
+
 			if(result.success)
 				this.$store.commit('updatePosts', result.posts)
-			else 
+			else
 				this.$store.commit('showNotification', {
 					message: result.message,
 					type: 'error'
@@ -66,11 +70,17 @@
 					return 'active'
 				return ''
 			},
+
 			getIconPrefix(users) {
 				if(users.indexOf(this.$store.getters.userId) >= 0)
 					return 'fas'
 				return 'far'
 			},
+
+			getTransformText: content => {
+				return content.replace(/<[^>]*>/g, '').slice(0, 300)
+			},
+
 			async updatePostRating(obj, id, action) {
 				if(!this.$store.getters.isUserAuthenticated) {
 					this.$store.commit('showNotification', {
@@ -106,6 +116,54 @@
 						obj.parentElement.querySelector('.posts-list__post-info__value').innerText = result.rating
 					}
 				}
+			},
+			
+			async updatePostBookmarks(obj, id) {
+				if(!this.$store.getters.isUserAuthenticated) {
+					this.$store.commit('showNotification', {
+						message: 'Нет, попробуй сначала авторизоваться',
+						type: 'error'
+					})
+					return
+				}
+				if(obj.tagName == 'path')
+					obj = obj.parentElement
+				if(obj.classList.contains('active')) {
+					var result = await this.$store.dispatch('removePostFromBookmarks', {
+						id: id
+					})
+					if(result.success) {
+						var posts = this.$store.getters.posts
+						for(var i = 0; i < posts.length; i++)
+							if(posts[i].id == id) {
+								posts[i].bookmarked_users.splice(posts[i].bookmarked_users.indexOf(this.$store.getters.userId, 1))
+								break
+							}
+						this.$store.commit('updatePosts', posts)
+
+						obj.parentElement.querySelector('.posts-list__post-info__value').innerText = result.bookmarks
+					}
+				} else {
+					result = await this.$store.dispatch('addPostToBookmarks', {
+						id: id
+					})
+					if(result.success) {
+						posts = this.$store.getters.posts
+						for(i = 0; i < posts.length; i++)
+							if(posts[i].id == id) {
+								posts[i].bookmarked_users.push(this.$store.getters.userId)
+								break
+							}
+						this.$store.commit('updatePosts', posts)
+
+						obj.parentElement.querySelector('.posts-list__post-info__value').innerText = result.bookmarks
+						this.$store.commit('showNotification', {
+							message: result.message,
+							type: 'success'
+						})
+					}
+				}
+		
 			}
 		}
 	}

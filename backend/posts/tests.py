@@ -3,10 +3,22 @@ from django.test import TestCase
 from account.models import User
 
 from .models import Post
-from .serializers import UpdatePostSerializer
 
 
-class PostRatingTest(TestCase):
+class UpdatePostRatingTest(TestCase):
+	@classmethod
+	def setUpTestData(self):
+		user = User.objects.create(username='username', password='password',
+								   email='email@yandex.ru')
+		self.post = Post.objects.create(user=user, title='Test post', content='Test post')
+
+	def test_drop_post_rating(self):
+		response = self.client.post(f'/api/posts/{self.post.id}/drop_rating/')
+		print(self.post.id)
+		print(response.status_code)
+
+
+'''class PostRatingTest(TestCase):
 	@classmethod
 	def setUpTestData(cls):
 		user = User.objects.create(username='username', password='password',
@@ -62,3 +74,24 @@ class CreatePostTest(TestCase):
 										  'content': 'Test post'})
 		self.assertTrue(serializer.is_valid())
 		serializer.save()
+
+
+class UpdateBookmarksTest(TestCase):
+	@classmethod
+	def setUpTestData(cls):
+		user = User.objects.create(username='username', password='password',
+								   email='email@yandex.ru')
+		Post.objects.create(user=user, title='Test post', content='Test post')
+
+	def setUp(self):
+		self.post = Post.objects.get(id=1)
+
+	def test_bookmark_post(self):
+		result = self.post.add_to_bookmarks(self.post.user)
+		self.assertEquals(result, 1)
+		self.assertTrue(self.post.user in self.post.bookmark_users.all())
+
+	def test_remove_post_from_bookmarks(self):
+		result = self.post.remove_from_bookmarks(self.post.user)
+		self.assertEquals(result, 0)
+		self.assertFalse(self.post.user in self.post.bookmark_users.all())'''

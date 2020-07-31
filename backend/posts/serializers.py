@@ -11,12 +11,12 @@ class PostSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	#dropped_rating_users = UserSerializer(many=True)
 	#raised_rating_users = UserSerializer(many=True)
-	#bookmark_users = UserSerializer(many=True)
+	#bookmarked_users = UserSerializer(many=True)
 
 	class Meta:
 		model = Post
 		fields = ['id', 'user', 'title', 'content', 'date_created', 'views', 'rating',
-				  'dropped_rating_users', 'raised_rating_users', 'bookmark_users']
+				  'dropped_rating_users', 'raised_rating_users', 'bookmarked_users']
 
 
 class UpdatePostSerializer(serializers.ModelSerializer):
@@ -25,4 +25,4 @@ class UpdatePostSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Post
 		fields = ['id', 'user', 'title', 'content', 'date_created', 'views', 'rating',
-				  'dropped_rating_users', 'raised_rating_users', 'bookmark_users']
+				  'dropped_rating_users', 'raised_rating_users', 'bookmarked_users']

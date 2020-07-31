@@ -17,5 +17,4 @@ def decode_auth_token(token):
 	except jwt.exceptions.DecodeError:
 		return None
 
-	print(token_data)
 	return token_data['user_id']

@@ -14,7 +14,7 @@ class Post(models.Model):
 	rating = models.IntegerField(default=0)
 	dropped_rating_users = models.ManyToManyField(User, blank=True, related_name='dropped_posts', verbose_name='users who dropped the rating')
 	raised_rating_users = models.ManyToManyField(User, blank=True, related_name='raised_posts', verbose_name='users who raised the rating')
-	bookmark_users = models.ManyToManyField(User, blank=True, related_name='bookmarked_posts', verbose_name='users who bookmarked the post')
+	bookmarked_users = models.ManyToManyField(User, blank=True, related_name='bookmarked_posts', verbose_name='users who bookmarked the post')
 
 	class Meta:
 		ordering = ['-date_created']
@@ -58,3 +58,17 @@ class Post(models.Model):
 			self.save()
 			return self.rating
 		return False
+
+	def add_to_bookmarks(self, user):
+		if user in self.bookmarked_users.all():
+			return False
+		self.bookmarked_users.add(user)
+		self.save()
+		return self.bookmarked_users.count()
+
+	def remove_from_bookmarks(self, user):
+		if not user in self.bookmarked_users.all():
+			return False
+		self.bookmarked_users.remove(user)
+		self.save()
+		return self.bookmarked_users.count()

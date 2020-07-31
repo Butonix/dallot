@@ -33,11 +33,23 @@ axios.interceptors.response.use((response) => ({
 	status: response.status
 }), function(error) {
 	console.log('ERROR: ', error)
-	return Promise.reject({
-		detail: error.response.data.detail,
-		status: error.response.status,
-		data: error.response.data
-	})
+
+	try {
+		var data = {
+			message: 'Ой-ой! Что-то пошло не так',
+			detail: error.response.data.detail,
+			status: error.response.status,
+			data: error.response.data
+		}
+	} catch(e) {
+		data = {
+			message: `Ой-ой! Что-то пошло вообще не так`,
+			detail: `Ой-ой! Что-то пошло вообще не так`,
+			status: 500
+		}
+	}
+
+	return Promise.reject(data)
 })
 
 new Vue({

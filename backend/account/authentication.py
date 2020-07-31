@@ -11,7 +11,6 @@ class Authentication(BaseAuthentication):
 		auth_token = request.META.get('HTTP_AUTH_TOKEN')
 
 		if not auth_token:
-			print('No token')
 			return None
 
 		user_id = utils.decode_auth_token(auth_token)

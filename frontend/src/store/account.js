@@ -14,10 +14,12 @@ export default {
 			localStorage.setItem('auth_token', token)
 			axios.defaults.headers.common['auth-token'] = token
 		},
+
 		setUserInfo: (state, payload) => {
 			state.username = payload.username
 			state.userId = payload.id
 		},
+
 		logout: (state) => {
 			state.authToken = null
 			state.isAuthenticated = false
@@ -29,31 +31,31 @@ export default {
 	},
 	actions: {
 		async checkAuthToken({ commit }, { token }) {
-			return axios
-				.post('api/account/token/get_user/', {
+			return axios.post('api/account/token/get_user/', {
 					token: token
 				}).then(response => {
 					commit('setAuthToken', token)
 					commit('setUserInfo', response.data)
-					return {
-						success: true,
-					}
+					return {success: true}
 				}).catch(error => {
-					if(error.status == 400)
-						if(error.detail == 'Token is invalid or expired' || error.detail == 'Token is invalid')
-							return {
-								success: false,
-								message: 'Твой токен доступа истек. Перезайди в аккаунт'
-							}
+					if(error.status == 400 &&
+						(error.detail == 'Token is invalid or expired' ||
+						error.detail == 'Token is invalid')
+					) {
+						return {
+							success: false,
+							message: 'Твой токен доступа истек. Перезайди в аккаунт'
+						}
+					}
 					return {
 						success: false,
-						message: 'Ой-ой! Что-то пошло не так'
+						message: error.message
 					}
 				})
 		},
+
 		async getAuthToken({ commit }, { username, password}) {
-			return axios
-				.post('api/account/token/get_auth_token/', {
+			return axios.post('api/account/token/get_auth_token/', {
 					username: username,
 					password: password
 				}).then(response => {
@@ -61,21 +63,24 @@ export default {
 					commit('setUserInfo', response.data.user)
 					return {
 						success: true,
-						message: 'Рад тебя видеть, ' + response.data.user.username
+						message: `Рад тебя видеть, ${response.data.user.username}`
 					}
 				}).catch(error => {
-					if (error.status == 400)
-						if(error.detail == 'Username or password are invalid')
-							return {
-								success: false,
-								message: 'Кажется, ошибка в введенный данных'
-							}
+					if(error.status == 400 &&
+						error.detail == 'Username or password are invalid'
+					) {
+						return {
+							success: false,
+							message: 'Кажется, ошибка в введенный данных'
+						}
+					}
 					return {
 						success: false,
-						message: 'Ой-ой! Что-то пошло не так'
+						message: error.message
 					}
 				})
 		},
+
 		async userRegistration(context, { username, email, password }) {
 			return axios.post('api/account/create_user/', {
 				username: username,
@@ -83,9 +88,14 @@ export default {
 				password: password
 			}).then(() => ({
 				success: true,
-				message: 'Поздравляю со вступлением в нашу команду. Теперь ты может войти в аккаунт'
+				message: `Поздравляю со вступлением в нашу команду. 
+						  Теперь ты может войти в аккаунт`
 			})).catch(error => {
-				console.log(error.data)
+				if(error.status != 400) return {
+					success: false,
+					message: error.message
+				}
+
 				switch(error.data[Object.keys(error.data)[0]][0]) {
 					case 'Enter a valid email address.':
 						var message = 'Лучше ввести корректный email'
